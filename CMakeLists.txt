@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(HomeWork1)
+project(HomeWork2)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -9,14 +9,17 @@ set(CMAKE_CXX_FLAGS "-std=c++0x -Wall -ggdb3")
 include_directories(project/include)
 include_directories(SYSTEM ${CMAKE_BINARY_DIR}/include)
 
-include(ExternalProject) # Подключает ExternalProject_Add
+include(ExternalProject)
 find_package(Git REQUIRED)
 
-add_library(hw_lib STATIC project/src/files.c project/src/files_processing.c project/src/words_storage.c)
+add_library(hw_lib STATIC project/src/directory_processing.c
+                          project/src/misc.c
+                          project/src/files_processing.c)
 
 set(TARGET metric)
 add_executable(${TARGET} project/main.c)
 target_link_libraries(${TARGET} hw_lib)
+target_link_libraries(${TARGET} m)
 
 option(ENABLE_COVERAGE "Build tests coverage statistic" OFF)
 if (ENABLE_COVERAGE)
@@ -27,7 +30,7 @@ if (ENABLE_COVERAGE)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
 endif ()
 
-option(ENABLE_CPPCHECK "Configure and run cppcheck." OFF) # Makes boolean 'test' available.
+option(ENABLE_CPPCHECK "Configure and run cppcheck." OFF)
 if (ENABLE_CPPCHECK)
 
     list(APPEND CPPCHECK_CMAKE_ARGS

@@ -1,32 +1,42 @@
 #include <stdio.h>
-#include <dirent.h>
+#include <stdlib.h>
 
-#include "files.h"
+#include "directory_processing.h"
 #include "files_processing.h"
 
-#define DIR_PATH "../data"
-
-#define FILE_NAME1 "file1"
-#define FILE_NAME2 "file1"
-#define FILE_NAME3 "file3"
-#define FILE_NAME4 "file4"
-
-#include "words_storage.h"
-#include <string.h>
+#define PATH "../data/"
 
 int main() {
-    words_storage_t *storage = create_storage("AB");
-    if (storage == NULL) {
+    files_t *files = read_files(PATH);
+    if (files == NULL) {
         return -1;
     }
 
-    insert_in_storage(storage, "AAA");
-    insert_in_storage(storage, "AAC");
-    insert_in_storage(storage, "ABA");
-    insert_in_storage(storage, "ACCA");
+    set_t *set = create_set_from_files(files);
+    if (set == NULL) {
+        delete_files_set(files);
+        return -1;
+    }
 
-    show_storage(storage);
+    bag_of_words_t *bag = create_bag(files, set);
+    if (bag == NULL) {
+        delete_files_set(files);
+        delete_set(set);
+        return -1;
+    }
 
-    delete_storage(storage);
+
+    for (size_t i = 0; i < bag->rows; ++i) {
+        for (int j = 0; j < bag->cols; ++j) {
+            printf("%5ld ", bag->matrix[i][j]);
+        }
+        printf("\n");
+    }
+
+    delete_bag(bag);
+    delete_files_set(files);
+    delete_set(set);
+
+//    bag_of_words_t
     return 0;
 }
