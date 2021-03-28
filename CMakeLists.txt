@@ -4,7 +4,7 @@ project(HomeWork2)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_CXX_FLAGS "-std=c++0x -Wall -ggdb3")
+set(CMAKE_CXX_FLAGS "-std=c++0x -Wall -Werror -Wpedantic -ggdb3")
 
 include_directories(project/include)
 include_directories(SYSTEM ${CMAKE_BINARY_DIR}/include)
@@ -12,16 +12,33 @@ include_directories(SYSTEM ${CMAKE_BINARY_DIR}/include)
 include(ExternalProject)
 find_package(Git REQUIRED)
 
-add_library(hw_lib STATIC project/src/directory_processing.c
-                          project/src/misc.c
-                          project/src/files_processing.c
-                          project/src/calculations.c
-                          project/src/control_units.c
-        )
-
 set(TARGET metric)
 add_executable(${TARGET} project/main.c)
-target_link_libraries(${TARGET} hw_lib)
+
+add_library(hw_lib_parallel STATIC project/parallel/src/directory_processing.c
+        project/parallel/src/misc.c
+        project/parallel/src/files_processing.c
+        project/parallel/src/calculations.c
+        project/parallel/src/control_units.c
+        )
+
+add_library(hw_lib_consistent STATIC project/consistent/src/directory_processing.c
+        project/consistent/src/misc.c
+        project/consistent/src/files_processing.c
+        project/consistent/src/calculations.c
+        project/consistent/src/control_units.c
+        )
+
+option(PARALLEL "Build parallel" OFF)
+if (PARALLEL)
+    target_link_libraries(${TARGET} hw_lib_parallel)
+endif()
+
+option(CONSISTENT "Build consistent" OFF)
+if (CONSISTENT)
+    target_link_libraries(${TARGET} hw_lib_consistent)
+endif()
+
 target_link_libraries(${TARGET} m)
 
 option(ENABLE_COVERAGE "Build tests coverage statistic" OFF)

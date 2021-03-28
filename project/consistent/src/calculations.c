@@ -115,7 +115,7 @@ int delete_top(const bag_of_words_t *bag, index_val_t **top_table) {
     free(top_table);
 }
 
-int show_top(const set_t *set, const files_t *files, index_val_t **table, size_t rows, size_t positions) {
+int show_top(const hash_table_t *set, const files_t *files, index_val_t **table, size_t rows, size_t positions) {
     if (set == NULL) {
         return -1;
     }
@@ -124,20 +124,32 @@ int show_top(const set_t *set, const files_t *files, index_val_t **table, size_t
         return -1;
     }
 
-    expanded_set_t *ex_set = expand_set(set);
-    if (ex_set == NULL) {
+    char **words = (char **) malloc(sizeof(char *) * set->total_size);
+    if (words == NULL) {
         return -1;
+    }
+
+    for (int i = 0; i < MAX_TABLE_SIZE; ++i) {
+        if (set->hash_table[i] != NULL) {
+            for (size_t j = 0; j < set->hash_table[i]->amount; ++j) {
+                size_t index = set->hash_table[i]->indexes[j];
+                custom_strcpy(&(words[index]), set->hash_table[i]->words[j]);
+            }
+        }
     }
 
     for (size_t i = 0; i < rows; ++i) {
         printf("file %s top:\n", files->file_names[i]);
         for (size_t j = 0; j < positions; ++j) {
-            printf("%lu: %s value: %.5f\n", j, ex_set->expanded_set[table[i][j].index], table[i][j].val);
+            printf("%lu: %s value: %.8f\n", j + 1, words[table[i][j].index], table[i][j].val);
         }
         printf("\n");
     }
 
-    delete_expand_set(ex_set);
+    for (int i = 0; i < set->total_size; ++i) {
+        free(words[i]);
+    }
+    free(words);
 
     return 0;
 }

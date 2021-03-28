@@ -1,17 +1,12 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "files_processing.h"
 #include "directory_processing.h"
-#include "calculations.h"
 #include "control_units.h"
 
 #define PATH "../generated_data/"
 
 int main() {
     files_t *files;
-    set_t *set;
+    hash_table_t *set;
     bag_of_words_t *bag;
 
     if (init_block(PATH, &files, &set, &bag) != 0) {

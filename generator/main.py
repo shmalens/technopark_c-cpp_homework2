@@ -3,6 +3,7 @@ from os import listdir, remove
 
 data_file_path = "../data/file"
 generating_path = "../generated_data"
+max_files_amount = 1000
 
 def prepare_words():
     words = []
@@ -12,7 +13,9 @@ def prepare_words():
     words = words.split()
     return words
 
-str_len = 10
+#str_len = int(input("str len: "))
+str_len = 1
+
 
 if __name__ == '__main__':
     dir_files = listdir(generating_path)
@@ -20,8 +23,7 @@ if __name__ == '__main__':
         for f in dir_files:
             remove(generating_path + '/' + f)
 
-    # files_amount = random.randint(1, 25)
-    files_amount = 500
+    files_amount = random.randint(1, max_files_amount)
     list_of_words = prepare_words()
     words_min = 1
     words_max = len(list_of_words)

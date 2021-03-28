@@ -3,7 +3,7 @@
 #include "directory_processing.h"
 #include "calculations.h"
 
-int init_block(const char *dir_path, files_t **files, set_t **set, bag_of_words_t **bag) {
+int init_block(const char *dir_path, files_t **files, hash_table_t **set, bag_of_words_t **bag) {
     if (dir_path == NULL) {
         return EMPTY_PATH;
     }
@@ -13,15 +13,16 @@ int init_block(const char *dir_path, files_t **files, set_t **set, bag_of_words_
         return ERR_CREATING_FILES_SET;
     }
 
-    *set = create_set_from_files(*files);
+    *set = create_hash_from_files(*files);
     if (*set == NULL) {
         delete_files_set(*files);
         return ERR_CREATING_SET;
     }
 
+
     *bag = create_bag(*files, *set);
     if (*bag == NULL) {
-        delete_set(*set);
+        delete_hash(*set);
         delete_files_set(*files);
         return ERR_CREATING_BAG;
     }
@@ -29,7 +30,7 @@ int init_block(const char *dir_path, files_t **files, set_t **set, bag_of_words_
     return 0;
 }
 
-int data_processing(files_t *files, set_t *set, bag_of_words_t *bag) {
+int data_processing(files_t *files, hash_table_t *set, bag_of_words_t *bag) {
     if (files == NULL) {
         return EMPTY_FILES;
     }
@@ -51,13 +52,6 @@ int data_processing(files_t *files, set_t *set, bag_of_words_t *bag) {
         return ERR_GETTING_TOP;
     }
 
-//    for (size_t i = 0; i < bag->rows; ++i) {
-//        for (size_t j = 0; j < bag->cols; ++j) {
-//            printf("%.2f ", bag->matrix[i][j]);
-//        }
-//        printf("\n");
-//    }
-
     show_top(set, files, top_table, bag->rows, TOP);
 
     delete_top(bag, top_table);
@@ -66,8 +60,8 @@ int data_processing(files_t *files, set_t *set, bag_of_words_t *bag) {
 }
 
 
-void free_resources(files_t *files, set_t *set, bag_of_words_t *bag) {
+void free_resources(files_t *files, hash_table_t *set, bag_of_words_t *bag) {
     delete_files_set(files);
-    delete_set(set);
+    delete_hash(set);
     delete_bag(bag);
 }
