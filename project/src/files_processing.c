@@ -154,18 +154,48 @@ static long set_contains(const set_t *set, const char *word) {
     return NOT_FOUND;
 }
 
-///* Для тестирования, на пр удалить */
-//
-int print_traverse(node_t *root) {
+static void traverse(node_t *root, char **set) {
     if (root != NULL) {
-        print_traverse(root->left);
-        printf("%s %lu\n", root->word, root->index);
-        print_traverse(root->right);
+        custom_strcpy(&(set[root->index]), root->word);
+        traverse(root->left, set);
+        traverse(root->right, set);
     }
+}
+
+expanded_set_t *expand_set(const set_t *set) {
+    if (set == NULL) {
+        return NULL;
+    }
+
+    expanded_set_t *new_ex_set = (expanded_set_t *) malloc(sizeof(expanded_set_t));
+    if (new_ex_set == NULL) {
+        return NULL;
+    }
+
+    new_ex_set->expanded_set = (char **) malloc(sizeof(char *) * set->total_size);
+    if (new_ex_set->expanded_set == NULL) {
+        free(new_ex_set);
+        return NULL;
+    }
+
+    traverse(set->root, new_ex_set->expanded_set);
+    new_ex_set->amount = set->total_size;
+
+    return new_ex_set;
+}
+
+int delete_expand_set(expanded_set_t *set) {
+    if (set == NULL) {
+        return -1;
+    }
+
+    for (size_t i = 0; i < set->amount; ++i) {
+        free(set->expanded_set[i]);
+    }
+    free(set->expanded_set);
+    free(set);
     return 0;
 }
-//
-///* end testing */
 
 bag_of_words_t *create_bag(const files_t *files, const set_t *total) {
     if (files == NULL) {

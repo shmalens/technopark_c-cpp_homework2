@@ -24,6 +24,6 @@ files_t *create_files_set();
 int delete_files_set(files_t *src);
 int add_files_in_set(files_t *src, const char *new_file);
 
-files_t *read_files(char *path_to_directory);
+files_t *read_files(const char *path_to_directory);
 
 #endif //DIRECTORY_PROCESSING_H

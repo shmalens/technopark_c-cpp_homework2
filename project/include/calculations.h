@@ -9,7 +9,15 @@ enum calculations_errors {
     WRONG_VALUE
 };
 
+typedef struct {
+    double val;
+    size_t index;
+} index_val_t;
+
 int tf_idf_transform(bag_of_words_t *bag);
-int get_top(const bag_of_words_t *bag, size_t **top_table, unsigned int positions);
+
+index_val_t **get_top(const bag_of_words_t *bag);
+int delete_top(const bag_of_words_t *bag, index_val_t **top_table);
+int show_top(const set_t *set, const files_t *files, index_val_t **table, size_t rows, size_t positions);
 
 #endif //CALCULATIONS_H

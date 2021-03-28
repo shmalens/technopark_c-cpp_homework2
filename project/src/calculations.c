@@ -51,35 +51,93 @@ int tf_idf_transform(bag_of_words_t *bag) {
     return 0;
 }
 
-int get_top(const bag_of_words_t *bag, size_t **top_table, unsigned int positions) {
+static int comparator(const void *l, const void *r) {
+    index_val_t *left = (index_val_t *)l;
+    index_val_t *right = (index_val_t *)r;
+    double res = left->val - right->val;
+    if (res < 0) {
+        return 1;
+    }
+
+    if (res > 0) {
+        return -1;
+    }
+
+    return 0;
+}
+
+index_val_t **get_top(const bag_of_words_t *bag) {
     if (bag == NULL) {
-        return EMPTY_PTR;
+        return NULL;
     }
 
+    index_val_t **top_table = (index_val_t **) malloc(sizeof(index_val_t *) * bag->rows);
     if (top_table == NULL) {
-        return EMPTY_PTR;
+        return NULL;
     }
 
-    if (positions == 0 || positions > bag->cols) {
-        return WRONG_VALUE;
+    for (size_t i = 0; i < bag->rows; ++i) {
+        top_table[i] = (index_val_t *) malloc(sizeof(index_val_t) * bag->cols);
+        if (top_table[i] == NULL) {
+            for (size_t j = 0; j < i; ++j) {
+                free(top_table[j]);
+            }
+            return NULL;
+        }
     }
 
     for (size_t i = 0; i < bag->rows; ++i) {
         for (size_t j = 0; j < bag->cols; ++j) {
-            for (unsigned int k = 0; k < positions; ++k) {
-                if (bag->matrix[i][j] > bag->matrix[i][top_table[i][k]]) {
-                    memmove(top_table[i], top_table[i] + 1, sizeof(size_t) * (positions - 1));
-                    top_table[i][positions - 1] = j;
-                    printf("row %lu %f >= %f on %lu %lu\n", i,
-                           bag->matrix[i][j],
-                           bag->matrix[i][top_table[i][k]],
-                           j,
-                           top_table[i][k]);
-                    break;
-                }
-            }
+            top_table[i][j].val = bag->matrix[i][j];
+            top_table[i][j].index = j;
         }
     }
+
+    for (size_t i = 0; i < bag->rows; ++i) {
+        qsort(top_table[i], bag->cols, sizeof(index_val_t), comparator);
+    }
+
+    return top_table;
+}
+
+int delete_top(const bag_of_words_t *bag, index_val_t **top_table) {
+    if (bag == NULL) {
+        return -1;
+    }
+
+    if (top_table == NULL) {
+        return -1;
+    }
+
+    for (size_t i = 0; i < bag->rows; ++i) {
+        free(top_table[i]);
+    }
+    free(top_table);
+}
+
+int show_top(const set_t *set, const files_t *files, index_val_t **table, size_t rows, size_t positions) {
+    if (set == NULL) {
+        return -1;
+    }
+
+    if (table == NULL) {
+        return -1;
+    }
+
+    expanded_set_t *ex_set = expand_set(set);
+    if (ex_set == NULL) {
+        return -1;
+    }
+
+    for (size_t i = 0; i < rows; ++i) {
+        printf("file %s top:\n", files->file_names[i]);
+        for (size_t j = 0; j < positions; ++j) {
+            printf("%lu: %s value: %.5f\n", j, ex_set->expanded_set[table[i][j].index], table[i][j].val);
+        }
+        printf("\n");
+    }
+
+    delete_expand_set(ex_set);
 
     return 0;
 }

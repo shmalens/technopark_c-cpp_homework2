@@ -4,3 +4,5 @@ cmake-build-debug/*
 data/*
 data/*
 file
+generator/venv/*
+generator_data/*

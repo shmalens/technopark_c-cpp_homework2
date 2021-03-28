@@ -75,7 +75,7 @@ int add_files_in_set(files_t *src, const char *new_file) {
     return 0;
 }
 
-files_t *read_files(char *path_to_directory) {
+files_t *read_files(const char *path_to_directory) {
     DIR *directory = opendir(path_to_directory);
     if (directory == NULL) {
         return NULL;

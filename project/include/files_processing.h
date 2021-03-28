@@ -33,12 +33,18 @@ typedef struct {
     size_t rows;
 } bag_of_words_t;
 
+typedef struct {
+    char **expanded_set;
+    size_t amount;
+} expanded_set_t;
+
 bag_of_words_t *create_bag(const files_t *files, const set_t *set);
 int delete_bag(bag_of_words_t *bag);
 
 set_t *create_set_from_files(const files_t *files);
 int delete_set(set_t *set);
 
-int print_traverse(node_t *root);
+expanded_set_t *expand_set(const set_t *set);
+int delete_expand_set(expanded_set_t *set);
 
 #endif //PROCESSING_H
