@@ -5,4 +5,4 @@ data/*
 data/*
 file
 generator/venv/*
-generator_data/*
+generated_data/*

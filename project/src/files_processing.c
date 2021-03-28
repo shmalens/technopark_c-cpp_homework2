@@ -244,6 +244,7 @@ bag_of_words_t *create_bag(const files_t *files, const set_t *total) {
             free(new_bag);
             return NULL;
         }
+        printf("%s analize...\n", files->file_names[i]);
 
         char buff[MAXSIZE];
         int err;
