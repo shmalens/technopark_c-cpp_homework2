@@ -12,9 +12,12 @@ include_directories(SYSTEM ${CMAKE_BINARY_DIR}/include)
 include(ExternalProject)
 find_package(Git REQUIRED)
 
-add_library(hw_lib STATIC project/src/directory_processing.c
+add_library(hw_lib STATIC                            project/src/files_processing.c
+        project/src/directory_processing.c
                           project/src/misc.c
-                          project/src/files_processing.c)
+                          project/src/calculations.c
+                          project/src/processing.c
+        )
 
 set(TARGET metric)
 add_executable(${TARGET} project/main.c)

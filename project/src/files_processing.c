@@ -156,14 +156,14 @@ static long set_contains(const set_t *set, const char *word) {
 
 ///* Для тестирования, на пр удалить */
 //
-//static int print_traverse(node_t *root) {
-//    if (root != NULL) {
-//        print_traverse(root->left);
-//        printf("%s %lu\n", root->word, root->index);
-//        print_traverse(root->right);
-//    }
-//    return 0;
-//}
+int print_traverse(node_t *root) {
+    if (root != NULL) {
+        print_traverse(root->left);
+        printf("%s %lu\n", root->word, root->index);
+        print_traverse(root->right);
+    }
+    return 0;
+}
 //
 ///* end testing */
 
@@ -184,14 +184,14 @@ bag_of_words_t *create_bag(const files_t *files, const set_t *total) {
     // Создаем матрицу
     new_bag->rows = files->amount;
     new_bag->cols = total->total_size;
-    new_bag->matrix = (size_t **) malloc(sizeof(size_t *) * new_bag->rows);
+    new_bag->matrix = (double **) malloc(sizeof(size_t *) * new_bag->rows);
     if (new_bag->matrix == NULL) {
         free(new_bag);
         return NULL;
     }
 
     for (size_t i = 0; i < new_bag->rows; ++i) {
-        new_bag->matrix[i] = (size_t *) malloc(sizeof(size_t) * new_bag->cols);
+        new_bag->matrix[i] = (double *) malloc(sizeof(size_t) * new_bag->cols);
         if (new_bag->matrix[i] == NULL) {
             for (size_t j = 0; j < i; ++j) {
                 free(new_bag->matrix[j]);

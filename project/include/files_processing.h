@@ -27,7 +27,7 @@ typedef struct {
 } set_t;
 
 typedef struct {
-    size_t **matrix;
+    double **matrix;
 
     size_t cols;
     size_t rows;
@@ -38,5 +38,7 @@ int delete_bag(bag_of_words_t *bag);
 
 set_t *create_set_from_files(const files_t *files);
 int delete_set(set_t *set);
+
+int print_traverse(node_t *root);
 
 #endif //PROCESSING_H
