@@ -1,6 +1,7 @@
 os: linux
 compiler:
   - gcc
+python: "3.8"
 
 env:
   global:
@@ -57,8 +58,8 @@ matrix:
         - cd ../python_scripts
         - python3 generator.py
         - cd ../build
-        - python3 ../python_scripts/timer.py
-        - python3 ../python_scripts/diff.py
+        - python ../python_scripts/timer.py
+        - python ../python_scripts/diff.py
 
     - os: linux
       env:
