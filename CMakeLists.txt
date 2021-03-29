@@ -83,7 +83,7 @@ if (ENABLE_CPPCHECK)
     )
 
     list(APPEND CPPCHECK_ARGS1
-            --enable=all
+            --enable=warning performance portability information error
             --std=c11
             --verbose
             --error-exitcode=1
@@ -98,7 +98,8 @@ if (ENABLE_CPPCHECK)
             --verbose
             --error-exitcode=1
             --language=c++
-            ${CMAKE_SOURCE_DIR}/test/*.cpp
+            ${CMAKE_SOURCE_DIR}/tests/parallel/*.cpp
+            ${CMAKE_SOURCE_DIR}/tests/consistent/*.cpp
             )
 
     add_custom_target(

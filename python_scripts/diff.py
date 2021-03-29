@@ -32,7 +32,6 @@ if __name__ == '__main__':
             list_c.append(lc[2:])
             if counter == pos + 1:
                 if top_diff(list_p, list_c) == False:
-                    # print('MISMATCH')
                     exit(-1)
                 co.readline()
                 po.readline()
