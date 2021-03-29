@@ -1,8 +1,6 @@
 .idea/*
 build/*
 cmake-build-debug/*
-data/*
-data/*
 file
 generator/venv/*
 generated_data/*
