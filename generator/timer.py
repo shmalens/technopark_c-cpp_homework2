@@ -3,7 +3,7 @@ import os
 import subprocess
 
 parallel_out = "output_parallel"
-consistent_out = "output_parallel"
+consistent_out = "output_consistent"
 
 if __name__ == '__main__':
     print('hello')
