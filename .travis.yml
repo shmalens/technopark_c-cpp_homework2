@@ -55,7 +55,7 @@ matrix:
         - cmake -DPARALLEL=ON -DCONSISTENT=ON ..
         - make
         - cd ../python_scripts
-        - python3 generator.py
+        - python generator.py
         - cd ../build
         - python ../python_scripts/timer.py
         - python ../python_scripts/diff.py
