@@ -8,7 +8,7 @@ def comp(x, y):
     return "".join(str(x).split()[1:]) >= "".join(str(y).split()[1:])
 
 
-def top_diff(list_par: list, list_con: list):
+def top_diff(list_par, list_con):
     list_par.sort()
     list_con.sort()
     for line_p, line_c in zip(list_par, list_con):
@@ -32,7 +32,7 @@ if __name__ == '__main__':
             list_c.append(lc[2:])
             if counter == pos + 1:
                 if top_diff(list_p, list_c) == False:
-                    print('MISMATCH')
+                    # print('MISMATCH')
                     exit(-1)
                 co.readline()
                 po.readline()

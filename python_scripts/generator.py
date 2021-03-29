@@ -37,5 +37,5 @@ if __name__ == '__main__':
             total_words_amount += amount_to_write
             [file.write(random.choice(list_of_words) + " ") for i in range(amount_to_write)]
 
-        print(f"In file {i} writen {words_amount} words")
-    print(f"Total words writen: {total_words_amount}")
+        # print(f"In file {i} writen {words_amount} words")
+    # print(f"Total words writen: {total_words_amount}")

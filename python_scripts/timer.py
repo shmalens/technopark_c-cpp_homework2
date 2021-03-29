@@ -23,5 +23,7 @@ if __name__ == '__main__':
 
     time_end_consistent = time.time()
 
-    print(f"Time of completion parallel {time_end_parallel - time_start_parallel} seconds")
-    print(f"Time of completion consistent {time_end_consistent - time_start_consistent} seconds")
+    print("parallel:")
+    print(time_end_parallel - time_start_parallel)
+    print("consistent:")
+    print(time_end_consistent - time_start_consistent)
