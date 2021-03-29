@@ -58,7 +58,6 @@ int data_processing(files_t *files, hash_table_t *set, bag_of_words_t *bag) {
     return 0;
 }
 
-
 void free_resources(files_t *files, hash_table_t *set, bag_of_words_t *bag) {
     delete_files_set(files);
     delete_hash(set);

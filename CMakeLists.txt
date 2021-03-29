@@ -142,7 +142,8 @@ if (BUILD_TESTS)
         add_test(NAME ${name} COMMAND "${name}_tests")
     endforeach ()
 
-    file(GLOB consistent tests/consistent/file_processing_cons.cpp)
+    file(GLOB consistent tests/consistent/file_processing_cons.cpp
+                         tests/consistent/control_units_cons.cpp)
 
     foreach (file ${consistent})
         set(name)
@@ -153,7 +154,8 @@ if (BUILD_TESTS)
         add_test(NAME ${name} COMMAND "${name}_tests")
     endforeach ()
 
-    file(GLOB parallel tests/parallel/file_processing_par.cpp)
+    file(GLOB parallel tests/parallel/file_processing_par.cpp
+                       tests/parallel/control_units_par.cpp)
 
     foreach (file ${parallel})
         set(name)
