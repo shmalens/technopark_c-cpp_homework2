@@ -51,7 +51,7 @@ int data_processing(files_t *files, hash_table_t *set, bag_of_words_t *bag) {
         return ERR_GETTING_TOP;
     }
 
-//    show_top(set, files, top_table, bag->rows, TOP);
+    show_top(set, files, top_table, bag->rows, TOP);
 
     delete_top(bag, top_table);
 

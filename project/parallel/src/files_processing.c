@@ -5,6 +5,7 @@
 #include <sys/wait.h>
 #include <sys/mman.h>
 #include <fcntl.h>
+#include <sys/sysinfo.h>
 
 #include "files_processing.h"
 #include "misc.h"
@@ -175,67 +176,84 @@ hash_table_t *create_hash_from_files(files_t *files) {
 
     int pipes[2];
     if (pipe(pipes) == -1) {
-        free(new_hash);
+        delete_hash(new_hash);
         return NULL;
     }
 
-    pid_t parent = getpid();
-    size_t process_num;
-    for (process_num = 0; process_num < files->amount; ++process_num) {
-        pid_t tmp = fork();
-        if (tmp == -1) {
-            for (size_t j = 0; j < process_num; ++j) {
-                wait(NULL);
-                free(new_hash);
+    size_t aviable = get_nprocs();
+    size_t max_processes = aviable > files->amount ? files->amount : aviable;
+    if (max_processes == 0) {
+        delete_hash(new_hash);
+        return NULL;
+    }
+    size_t max_cycles = files->amount / max_processes + (files->amount % max_processes == 0 ? 0 : 1);
+    size_t left = files->amount;
+
+    for (size_t cycle_num = 0; cycle_num < max_cycles; ++cycle_num) {
+        pid_t parent = getpid();
+        size_t process_num;
+        size_t max_processes_in_cycle = left > max_processes ? max_processes : left;
+        for (process_num = 0; process_num < max_processes_in_cycle; ++process_num) {
+            pid_t tmp = fork();
+            if (tmp == -1) {
+                for (size_t j = 0; j < process_num; ++j) {
+                    close(pipes[0]);
+                    close(pipes[1]);
+                    wait(NULL);
+                    free(new_hash);
+                    return NULL;
+                }
+            }
+            if (tmp == 0) {
+                break;
+            }
+        }
+
+        pid_t child = getpid();
+        if (child != parent) {
+            close(pipes[0]);
+            size_t file_number = cycle_num * max_processes + process_num;
+            FILE *fd = fopen(files->file_names[file_number], "r");
+            if (fd == NULL) {
+                close(pipes[1]);
+                delete_hash(new_hash);
                 return NULL;
             }
-        }
-        if (tmp == 0) {
-            break;
-        }
-    }
 
-    pid_t child = getpid();
-    if (child != parent) {
-        close(pipes[0]);
-        FILE *fd = fopen(files->file_names[process_num], "r");
-        if (fd == NULL) {
-            delete_hash(new_hash);
-            return NULL;
-        }
-
-        int err;
-        char buff[MAXSIZE];
-        while ((err = naive_tokenizer(fd, buff)) != EOF) {
-            if (err != 1) {
-                write(pipes[1], buff, sizeof(char) * MAXSIZE);
+            int err;
+            char buff[MAXSIZE];
+            memset(buff, 0, sizeof(char) * MAXSIZE);
+            while ((err = naive_tokenizer(fd, buff)) != EOF) {
+                if (err != 1) {
+                    write(pipes[1], buff, sizeof(char) * MAXSIZE);
+                }
             }
+
+            close(pipes[1]);
+            fclose(fd);
+            delete_hash(new_hash);
+            exit(0);
         }
 
-        fclose(fd);
-        delete_hash(new_hash);
-        unlink(FIFO_NAME);
-        close(pipes[1]);
-        return NULL;
+        if (child == parent) {
+            close(pipes[1]);
+            char buff[MAXSIZE];
+            memset(buff, 0, sizeof(char) * MAXSIZE);
+
+            while (read(pipes[0], buff, sizeof(char) * MAXSIZE) > 0) {
+                insert_in_hash(new_hash, buff);
+            }
+
+            for (size_t i = 0; i < process_num; ++i) {
+                wait(NULL);
+            }
+
+            close(pipes[0]);
+            left -= max_processes_in_cycle;
+        }
     }
 
-    if (child == parent) {
-        close(pipes[1]);
-        char buff[MAXSIZE];
-
-        while (read(pipes[0], buff, sizeof(char) * MAXSIZE) > 0) {
-            insert_in_hash(new_hash, buff);
-        }
-
-        for (size_t i = 0; i < process_num; ++i) {
-            wait(NULL);
-        }
-
-        close(pipes[0]);
-        return new_hash;
-    }
-
-    return NULL;
+    return new_hash;
 }
 
 int delete_hash(hash_table_t *hash) {
@@ -331,7 +349,6 @@ bag_of_words_t *create_bag(const files_t *files, hash_table_t *total) {
             return NULL;
         }
 
-
         int err;
         char buff[MAXSIZE];
         while ((err = naive_tokenizer(fd, buff)) != EOF) {
@@ -345,11 +362,11 @@ bag_of_words_t *create_bag(const files_t *files, hash_table_t *total) {
 
         fclose(fd);
         free(new_bag);
-        return NULL;
+        exit(0);
     }
 
     if (child == parent) {
-        for (size_t i = 0; i < new_bag->rows; ++i) {
+        for (size_t i = 0; i < process_num; ++i) {
             wait(NULL);
         }
 

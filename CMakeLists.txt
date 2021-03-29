@@ -12,8 +12,7 @@ include_directories(SYSTEM ${CMAKE_BINARY_DIR}/include)
 include(ExternalProject)
 find_package(Git REQUIRED)
 
-set(TARGET metric)
-add_executable(${TARGET} project/main.c)
+
 
 add_library(hw_lib_parallel STATIC project/parallel/src/directory_processing.c
         project/parallel/src/misc.c
@@ -31,15 +30,20 @@ add_library(hw_lib_consistent STATIC project/consistent/src/directory_processing
 
 option(PARALLEL "Build parallel" OFF)
 if (PARALLEL)
-    target_link_libraries(${TARGET} hw_lib_parallel)
+    set(TARGET1 parallel)
+    add_executable(${TARGET1} project/main.c)
+    target_link_libraries(${TARGET1} hw_lib_parallel)
+    target_link_libraries(${TARGET1} m)
 endif()
 
 option(CONSISTENT "Build consistent" OFF)
 if (CONSISTENT)
-    target_link_libraries(${TARGET} hw_lib_consistent)
+    set(TARGET2 consistent)
+    add_executable(${TARGET2} project/main.c)
+    target_link_libraries(${TARGET2} hw_lib_consistent)
+    target_link_libraries(${TARGET2} m)
 endif()
 
-target_link_libraries(${TARGET} m)
 
 option(ENABLE_COVERAGE "Build tests coverage statistic" OFF)
 if (ENABLE_COVERAGE)

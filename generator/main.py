@@ -3,7 +3,7 @@ from os import listdir, remove
 
 data_file_path = "../data/file"
 generating_path = "../generated_data"
-max_files_amount = 1000
+max_files_amount = 100
 
 def prepare_words():
     words = []
@@ -13,7 +13,6 @@ def prepare_words():
     words = words.split()
     return words
 
-#str_len = int(input("str len: "))
 str_len = 1
 
 
