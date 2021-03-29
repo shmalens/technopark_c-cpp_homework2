@@ -129,19 +129,6 @@ if (BUILD_TESTS)
 
     enable_testing()
 
-#    file(GLOB general tests/dir_processing.cpp
-#                          tests/misc.cpp)
-#
-#
-#    foreach (file ${general})
-#        set(name)
-#        get_filename_component(name ${file} NAME_WE)
-#        add_executable("${name}_tests" ${file})
-#        target_link_libraries("${name}_tests" gtest_main)
-#        target_link_libraries("${name}_tests" hw_lib_consistent)
-#        add_test(NAME ${name} COMMAND "${name}_tests")
-#    endforeach ()
-
     file(GLOB consistent
             tests/consistent/file_processing_cons.cpp
             tests/consistent/control_units_cons.cpp
