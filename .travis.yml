@@ -46,7 +46,7 @@ matrix:
 
     - os: linux
       env:
-        - TEST="timing + comparison output"
+        - TEST="Stress tests"
       addons:
         apt:
           sources:
@@ -58,11 +58,7 @@ matrix:
       script:
         - cmake -DPARALLEL=ON -DCONSISTENT=ON ..
         - make
-        - cd ../stress_tests
-        - python generator.py
-        - cd ../build
-        - python ../stress_tests/timer.py
-        - python ../stress_tests/diff.py
+        - ../stress_tests/run_stress_tests.sh
 
     - os: linux
       env:
