@@ -3,7 +3,7 @@ from os import listdir, remove
 
 data_file_path = "../data/file"
 generating_path = "../generated_data"
-max_files_amount = 100
+max_files_amount = 20
 
 def prepare_words():
     words = []

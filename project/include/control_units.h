@@ -19,8 +19,6 @@ enum data_processing_errors {
     EMPTY_SET,
     EMPTY_BAG,
     ERR_TF_IDF,
-
-
 };
 
 int init_block(const char *dir_path, files_t **files, hash_table_t **set, bag_of_words_t **bag);

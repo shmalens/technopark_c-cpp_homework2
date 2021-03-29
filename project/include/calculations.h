@@ -6,7 +6,6 @@
 enum calculations_errors {
     EMPTY_PTR = 1,
     ERROR_MEM_ALLOC,
-    WRONG_VALUE
 };
 
 typedef struct {

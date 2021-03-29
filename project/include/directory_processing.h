@@ -7,7 +7,6 @@
 
 #define DIRECTORY_SIZE 500
 
-/* aligned 16 bytes */
 typedef struct {
     char **file_names;
     size_t amount;

@@ -82,6 +82,7 @@ index_val_t **get_top(const bag_of_words_t *bag) {
             for (size_t j = 0; j < i; ++j) {
                 free(top_table[j]);
             }
+            free(top_table);
             return NULL;
         }
     }
@@ -140,8 +141,8 @@ int show_top(const hash_table_t *set, const files_t *files, index_val_t **table,
 
     for (size_t i = 0; i < rows; ++i) {
         printf("file %s top:\n", files->file_names[i]);
-        for (size_t j = 0; j < positions; ++j) {
-            printf("%lu: %s value: %.8f\n", j + 1, words[table[i][j].index], table[i][j].val);
+        for (int j = 0; j < positions; ++j) {
+            printf("%d: %s value: %.8f\n", j + 1, words[table[i][j].index], table[i][j].val);
         }
         printf("\n");
     }

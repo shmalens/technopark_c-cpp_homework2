@@ -19,36 +19,18 @@ enum set_adding_events {
     INSERTED = 2
 };
 
-/*typedef struct node {
-    char *word;
-    size_t index;
-    struct node *left;
-    struct node *right;
-} node_t;
-
-typedef struct {
-    node_t *root;
-    size_t total_size;
-} set_t;
-
- typedef struct {
-    char **expanded_set;
-    size_t amount;
-} expanded_set_t;
-
- */
-
 typedef struct {
     size_t *indexes;
     char **words;
+
     int amount;
     int capacity;
 } vector_t;
 
 typedef struct {
     vector_t *hash_table[MAX_TABLE_SIZE];
-    unsigned char rand[RAND_SIZE];
     size_t total_size;
+    unsigned char rand[RAND_SIZE];
 } hash_table_t;
 
 typedef struct {

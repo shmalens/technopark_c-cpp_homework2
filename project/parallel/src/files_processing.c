@@ -4,7 +4,6 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <sys/mman.h>
-#include <fcntl.h>
 #include <sys/sysinfo.h>
 
 #include "files_processing.h"
