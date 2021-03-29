@@ -37,7 +37,7 @@ if __name__ == '__main__':
                 co.readline()
                 po.readline()
                 counter = 0
-                list_p.clear()
-                list_c.clear()
+                list_p = []
+                list_c = []
 
     exit(0)
