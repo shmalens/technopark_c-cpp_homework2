@@ -13,9 +13,10 @@ def top_diff(list_par: list, list_con: list):
     list_con.sort()
     for line_p, line_c in zip(list_par, list_con):
         if not line_c == line_p:
-            print(line_c)
-            print(line_p)
-            return False
+            if not str(line_c).split()[1:] == str(line_c).split()[1:]:
+                print(line_c)
+                print(line_p)
+                return False
 
     return True
 

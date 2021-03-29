@@ -6,6 +6,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_FLAGS "-std=c++0x -Wall -Werror -Wpedantic -ggdb3")
 
+include(ExternalProject)
+
 include_directories(project/include)
 include_directories(SYSTEM ${CMAKE_BINARY_DIR}/include)
 
@@ -20,8 +22,8 @@ add_executable(${TARGET} project/main.c)
 add_executable(${TARGET1} project/main.c)
 add_executable(${TARGET2} project/main.c)
 
-add_library(hw_lib_parallel SHARED project/parallel/src/directory_processing.c
-        project/parallel/src/misc.c
+add_library(hw_lib_parallel SHARED project/src/directory_processing.c
+        project/src/misc.c
         project/parallel/src/files_processing.c
         project/parallel/src/calculations.c
         project/parallel/src/control_units.c
@@ -113,7 +115,7 @@ if (ENABLE_CPPCHECK)
 
 endif ()
 
-option(BUILD_TESTS "Build all tests." OFF) # Makes boolean 'test' available.
+option(BUILD_TESTS_CONSISTENT "Build all tests." OFF) # Makes boolean 'test' available.
 if (BUILD_TESTS)
     configure_file(CMakeLists.txt.in
             googletest-download/CMakeLists.txt)
@@ -127,14 +129,40 @@ if (BUILD_TESTS)
 
     enable_testing()
 
-    file(GLOB test_source test/words_storage.cpp)
+    file(GLOB test_source tests/consistent/*.cpp)
 
     foreach (file ${test_source})
         set(name)
         get_filename_component(name ${file} NAME_WE)
         add_executable("${name}_tests" ${file})
         target_link_libraries("${name}_tests" gtest_main)
-        target_link_libraries("${name}_tests" hw_lib)
+        target_link_libraries("${name}_tests" hw_lib_consistent)
+        add_test(NAME ${name} COMMAND "${name}_tests")
+    endforeach ()
+endif ()
+
+option(BUILD_TESTS_PARALLEL "Build all tests." OFF) # Makes boolean 'test' available.
+if (BUILD_TESTS)
+    configure_file(CMakeLists.txt.in
+            googletest-download/CMakeLists.txt)
+    execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
+            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/googletest-download)
+    execute_process(COMMAND ${CMAKE_COMMAND} --build .
+            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/googletest-download)
+
+    add_subdirectory(${CMAKE_BINARY_DIR}/googletest-src
+            ${CMAKE_BINARY_DIR}/googletest-build)
+
+    enable_testing()
+
+    file(GLOB test_source tests/parallel/*.cpp)
+
+    foreach (file ${test_source})
+        set(name)
+        get_filename_component(name ${file} NAME_WE)
+        add_executable("${name}_tests" ${file})
+        target_link_libraries("${name}_tests" gtest_main)
+        target_link_libraries("${name}_tests" hw_lib_parallel)
         add_test(NAME ${name} COMMAND "${name}_tests")
     endforeach ()
 endif ()

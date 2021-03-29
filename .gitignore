@@ -6,3 +6,5 @@ data/*
 file
 generator/venv/*
 generated_data/*
+python_scripts/venv*
+python_scripts/.idea/*

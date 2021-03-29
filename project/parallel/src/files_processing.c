@@ -397,6 +397,7 @@ bag_of_words_t *create_bag(const files_t *files, hash_table_t *total) {
         return new_bag;
     }
 
+    free(new_bag);
     return NULL;
 }
 
