@@ -48,10 +48,6 @@ SomeBag::~SomeBag() {
     }
 }
 
-//int init_block(const char *dir_path, files_t **files, hash_table_t **set, bag_of_words_t **bag);
-//int data_processing(files_t *files, hash_table_t *set, bag_of_words_t *bag);
-//void free_resources(files_t *files, hash_table_t *set, bag_of_words_t *bag);
-
 TEST(InitBlock, InitBlockOk) {
 Hash hash;
 FilesSet files;
