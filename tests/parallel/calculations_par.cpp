@@ -80,20 +80,19 @@ ASSERT_EQ(tf_idf_transform(NULL), EMPTY_PTR);
 }
 
 TEST(GetTop, topOk) {
-Top top;
-Hash hash;
-FilesSet files;
-SomeBag bag;
-ASSERT_EQ(init_block(TEST_PATH, &files.files, &hash.hash, &bag.bag), 0);
-ASSERT_EQ(tf_idf_transform(NULL), EMPTY_PTR);
-top.bag.bag = bag.bag;
-top.top = get_top(bag.bag);
-ASSERT_TRUE(top.top);
+index_val_t **top;
+hash_table_t *hash;
+files_t *files;
+bag_of_words_t *bag;
+ASSERT_EQ(init_block(TEST_PATH, &files, &hash, &bag), 0);
+ASSERT_EQ(tf_idf_transform(bag), 0);
+top = get_top(bag);
+ASSERT_TRUE(top);
 
-ASSERT_EQ(show_top(hash.hash, files.files, top.top, bag.bag->rows, POSITIONS), 0);
+ASSERT_EQ(show_top(hash, files, top, bag->rows, POSITIONS), 0);
 
-ASSERT_EQ(delete_top(bag.bag, top.top), 0);
-top.top = NULL;
+ASSERT_EQ(delete_top(bag, top), 0);
+top = NULL;
 }
 
 TEST(GetTop, topErr) {
