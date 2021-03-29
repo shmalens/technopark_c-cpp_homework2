@@ -36,7 +36,7 @@ matrix:
             - g++-6
             - valgrind
       script:
-        - cmake -DPARALLEL -DCONSISTENT ..
+        - cmake -DPARALLEL=ON -DCONSISTENT=ON ..
         - make
         - ./../run_valgrind.sh
 
