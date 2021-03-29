@@ -1,7 +1,6 @@
 os: linux
 compiler:
   - gcc
-python: "3.8"
 
 env:
   global:
@@ -51,7 +50,7 @@ matrix:
           packages:
             - gcc-6
             - g++-6
-            - python
+      python: 3.8
       script:
         - cmake -DPARALLEL=ON -DCONSISTENT=ON ..
         - make
