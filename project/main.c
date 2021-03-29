@@ -4,9 +4,6 @@
 
 #define PATH "../generated_data/"
 
-#include <stdio.h>
-#include "calculations.h"
-
 int main() {
     files_t *files;
     hash_table_t *set;

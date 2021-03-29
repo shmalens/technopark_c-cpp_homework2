@@ -51,7 +51,11 @@ int custom_strcat(char **dest, const char *src1, const char *src2) {
 
 int naive_tokenizer(FILE *fd, char *str) {
     if (fd == NULL) {
-        return 1;
+        return -1;
+    }
+
+    if (str == NULL) {
+        return -1;
     }
 
     int readed = fscanf(fd, TOKENIZER_PATTERN, str);

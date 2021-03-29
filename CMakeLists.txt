@@ -19,11 +19,9 @@ set(TARGET2 consistent)
 set(TARGET metric)
 
 add_executable(${TARGET} project/main.c)
-add_executable(${TARGET1} project/main.c)
-add_executable(${TARGET2} project/main.c)
 
-add_library(hw_lib_parallel SHARED project/src/directory_processing.c
-        project/src/misc.c
+add_library(hw_lib_parallel SHARED project/parallel/src/directory_processing.c
+        project/parallel/src/misc.c
         project/parallel/src/files_processing.c
         project/parallel/src/calculations.c
         project/parallel/src/control_units.c
@@ -40,17 +38,19 @@ target_link_libraries(${TARGET} hw_lib_parallel)
 
 option(PARALLEL "Build parallel" OFF)
 if (PARALLEL)
+    add_executable(${TARGET1} project/main.c)
     target_link_libraries(${TARGET1} hw_lib_parallel)
+    target_link_libraries(${TARGET1} m)
 endif()
 
 option(CONSISTENT "Build consistent" OFF)
 if (CONSISTENT)
+    add_executable(${TARGET2} project/main.c)
     target_link_libraries(${TARGET2} hw_lib_consistent)
+    target_link_libraries(${TARGET2} m)
 endif()
 
 target_link_libraries(${TARGET} m)
-target_link_libraries(${TARGET1} m)
-target_link_libraries(${TARGET2} m)
 
 option(ENABLE_COVERAGE "Build tests coverage statistic" OFF)
 if (ENABLE_COVERAGE)
@@ -115,7 +115,7 @@ if (ENABLE_CPPCHECK)
 
 endif ()
 
-option(BUILD_TESTS_CONSISTENT "Build all tests." OFF) # Makes boolean 'test' available.
+option(BUILD_TESTS "Build all tests." OFF) # Makes boolean 'test' available.
 if (BUILD_TESTS)
     configure_file(CMakeLists.txt.in
             googletest-download/CMakeLists.txt)
@@ -129,7 +129,8 @@ if (BUILD_TESTS)
 
     enable_testing()
 
-    file(GLOB test_source tests/consistent/*.cpp)
+    file(GLOB test_source tests/dir_processing.cpp
+                          tests/misc.cpp)
 
     foreach (file ${test_source})
         set(name)
@@ -137,32 +138,6 @@ if (BUILD_TESTS)
         add_executable("${name}_tests" ${file})
         target_link_libraries("${name}_tests" gtest_main)
         target_link_libraries("${name}_tests" hw_lib_consistent)
-        add_test(NAME ${name} COMMAND "${name}_tests")
-    endforeach ()
-endif ()
-
-option(BUILD_TESTS_PARALLEL "Build all tests." OFF) # Makes boolean 'test' available.
-if (BUILD_TESTS)
-    configure_file(CMakeLists.txt.in
-            googletest-download/CMakeLists.txt)
-    execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
-            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/googletest-download)
-    execute_process(COMMAND ${CMAKE_COMMAND} --build .
-            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/googletest-download)
-
-    add_subdirectory(${CMAKE_BINARY_DIR}/googletest-src
-            ${CMAKE_BINARY_DIR}/googletest-build)
-
-    enable_testing()
-
-    file(GLOB test_source tests/parallel/*.cpp)
-
-    foreach (file ${test_source})
-        set(name)
-        get_filename_component(name ${file} NAME_WE)
-        add_executable("${name}_tests" ${file})
-        target_link_libraries("${name}_tests" gtest_main)
-        target_link_libraries("${name}_tests" hw_lib_parallel)
         add_test(NAME ${name} COMMAND "${name}_tests")
     endforeach ()
 endif ()

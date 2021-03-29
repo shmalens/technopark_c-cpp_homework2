@@ -19,9 +19,7 @@ enum error_adding_file {
     ERROR_REALLOC_FILES_SET
 };
 
-files_t *create_files_set();
 int delete_files_set(files_t *src);
-int add_files_in_set(files_t *src, const char *new_file);
 
 files_t *read_files(const char *path_to_directory);
 

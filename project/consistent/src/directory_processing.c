@@ -4,7 +4,7 @@
 
 #include "directory_processing.h"
 
-files_t *create_files_set(size_t init_capacity) {
+static files_t *create_files_set(size_t init_capacity) {
     files_t *new_files_set = (files_t *) malloc(sizeof(files_t));
     if (new_files_set == NULL) {
         return NULL;
@@ -48,7 +48,7 @@ static int resize_files_set(files_t *set) {
     return 0;
 }
 
-int add_files_in_set(files_t *src, const char *new_file) {
+static int add_files_in_set(files_t *src, const char *new_file) {
     if (src == NULL) {
         return ERROR_EMPTY_FILE_SET;
     }
