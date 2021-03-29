@@ -114,6 +114,7 @@ int delete_top(const bag_of_words_t *bag, index_val_t **top_table) {
         free(top_table[i]);
     }
     free(top_table);
+    return 0;
 }
 
 int show_top(const hash_table_t *set, const files_t *files, index_val_t **table, size_t rows, size_t positions) {
