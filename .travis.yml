@@ -35,7 +35,11 @@ matrix:
             - gcc-6
             - g++-6
             - valgrind
+      python: 3.8
       script:
+        - cd ../stress_tests
+        - python generator.py
+        - cd ../build
         - cmake -DPARALLEL=ON -DCONSISTENT=ON ..
         - make
         - ./../run_valgrind.sh
@@ -54,11 +58,11 @@ matrix:
       script:
         - cmake -DPARALLEL=ON -DCONSISTENT=ON ..
         - make
-        - cd ../python_scripts
+        - cd ../stress_tests
         - python generator.py
         - cd ../build
-        - python ../python_scripts/timer.py
-        - python ../python_scripts/diff.py
+        - python ../stress_tests/timer.py
+        - python ../stress_tests/diff.py
 
     - os: linux
       env:

@@ -38,6 +38,7 @@ static int delete_vector(vector_t *vector) {
     free(vector->indexes);
     free(vector->words);
     free(vector);
+    return 0;
 }
 
 static int resize_vector(vector_t *vector) {
@@ -197,6 +198,7 @@ int delete_hash(hash_table_t *hash) {
         delete_vector(hash->hash_table[i]);
     }
     free(hash);
+    return 0;
 }
 
 static long get_index(hash_table_t *hash, char *word) {
