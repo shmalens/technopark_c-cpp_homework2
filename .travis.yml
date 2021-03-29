@@ -52,7 +52,7 @@ matrix:
             - g++-6
             - python
       script:
-        - cmake -DPARALLEL -DCONSISTENT ..
+        - cmake -DPARALLEL=ON -DCONSISTENT=ON ..
         - make
         - cd ../python_scripts
         - python generator.py
