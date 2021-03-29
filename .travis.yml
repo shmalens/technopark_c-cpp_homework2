@@ -24,21 +24,6 @@ before_script:
 
 matrix:
   include:
-#    - os: linux
-#      env:
-#        - TEST="cppcheck"
-#      addons:
-#        apt:
-#          sources:
-#            - ubuntu-toolchain-r-test
-#          packages:
-#            - gcc-6
-#            - g++-6
-#      script:
-#        - cmake -DENABLE_CPPCHECK=ON ..
-#        - make
-#        - make check1 && make check2
-
     - os: linux
       env:
         - TEST="Valgrind"
@@ -66,14 +51,14 @@ matrix:
             - gcc-6
             - g++-6
             - python
-     script:
-       - cmake -DPARALLEL -DCONSISTENT ..
-       - make
-       - cd ../python_scripts
-       - python generator.py
-       - cd ../build
-       - python ../python_scripts/timer.py
-       - python ../python_scripts/diff.py
+      script:
+        - cmake -DPARALLEL -DCONSISTENT ..
+        - make
+        - cd ../python_scripts
+        - python generator.py
+        - cd ../build
+        - python ../python_scripts/timer.py
+        - python ../python_scripts/diff.py
 
     - os: linux
       env:
@@ -92,3 +77,18 @@ matrix:
         - cd ..
         - export CODECOV_TOKEN="5425c62a-1e9e-4b61-84a4-289806f3c3f0"
         - bash <(curl -s https://codecov.io/bash)
+
+    - os: linux
+      env:
+        - TEST="cppcheck"
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - gcc-6
+            - g++-6
+      script:
+        - cmake -DENABLE_CPPCHECK=ON ..
+        - make
+        - make check1 && make check2
