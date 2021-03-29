@@ -105,35 +105,6 @@ static hash_table_t *create_hash() {
     return hash;
 }
 
-hash_table_t *create_hash_from_files(files_t *files) {
-    if (files == NULL) {
-        return NULL;
-    }
-
-    hash_table_t *new_hash = create_hash();
-    if (new_hash == NULL) {
-        return NULL;
-    }
-
-    for (size_t i = 0; i < files->amount; ++i) {
-        FILE *fd = fopen(files->file_names[i], "r");
-        if (fd == NULL) {
-            delete_hash(new_hash);
-        }
-
-        int err;
-        char buff[MAXSIZE];
-        while ((err = naive_tokenizer(fd, buff)) != EOF) {
-            if (err != 1) {
-                insert_in_hash(new_hash, buff);
-            }
-        }
-        fclose(fd);
-    }
-
-    return new_hash;
-}
-
 static int hash_function(hash_table_t *hash, char *word) {
     if (hash == NULL) {
         return -1;
@@ -156,24 +127,7 @@ static int hash_function(hash_table_t *hash, char *word) {
     return h % MAX_TABLE_SIZE;
 }
 
-void print_hash(hash_table_t *hash) {
-    if (hash == NULL) {
-        return;
-    }
-
-    for (int i = 0; i < MAX_TABLE_SIZE; ++i) {
-        if (hash->hash_table[i] != NULL) {
-            for (int j = 0; j < hash->hash_table[i]->amount; ++j) {
-                printf("word %s index %lu ",
-                       hash->hash_table[i]->words[j],
-                       hash->hash_table[i]->indexes[j]);
-            }
-            printf("\n");
-        }
-    }
-}
-
-int insert_in_hash(hash_table_t *hash, char *word) {
+static int insert_in_hash(hash_table_t *hash, char *word) {
     if (hash == NULL) {
         return ERROR_EMPTY_DEST_PTR;
     }
@@ -205,6 +159,35 @@ int insert_in_hash(hash_table_t *hash, char *word) {
     return INSERTED;
 }
 
+hash_table_t *create_hash_from_files(files_t *files) {
+    if (files == NULL) {
+        return NULL;
+    }
+
+    hash_table_t *new_hash = create_hash();
+    if (new_hash == NULL) {
+        return NULL;
+    }
+
+    for (size_t i = 0; i < files->amount; ++i) {
+        FILE *fd = fopen(files->file_names[i], "r");
+        if (fd == NULL) {
+            delete_hash(new_hash);
+        }
+
+        int err;
+        char buff[MAXSIZE];
+        while ((err = naive_tokenizer(fd, buff)) != EOF) {
+            if (err != 1) {
+                insert_in_hash(new_hash, buff);
+            }
+        }
+        fclose(fd);
+    }
+
+    return new_hash;
+}
+
 int delete_hash(hash_table_t *hash) {
     if (hash == NULL) {
         return -1;
@@ -216,7 +199,7 @@ int delete_hash(hash_table_t *hash) {
     free(hash);
 }
 
-long get_index(hash_table_t *hash, char *word) {
+static long get_index(hash_table_t *hash, char *word) {
     if (hash == NULL) {
         return -1;
     }

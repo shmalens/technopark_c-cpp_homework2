@@ -129,10 +129,11 @@ if (BUILD_TESTS)
 
     enable_testing()
 
-    file(GLOB test_source tests/dir_processing.cpp
+    file(GLOB general tests/dir_processing.cpp
                           tests/misc.cpp)
 
-    foreach (file ${test_source})
+
+    foreach (file ${general})
         set(name)
         get_filename_component(name ${file} NAME_WE)
         add_executable("${name}_tests" ${file})
@@ -140,4 +141,27 @@ if (BUILD_TESTS)
         target_link_libraries("${name}_tests" hw_lib_consistent)
         add_test(NAME ${name} COMMAND "${name}_tests")
     endforeach ()
+
+    file(GLOB consistent tests/consistent/file_processing_cons.cpp)
+
+    foreach (file ${consistent})
+        set(name)
+        get_filename_component(name ${file} NAME_WE)
+        add_executable("${name}_tests" ${file})
+        target_link_libraries("${name}_tests" gtest_main)
+        target_link_libraries("${name}_tests" hw_lib_consistent)
+        add_test(NAME ${name} COMMAND "${name}_tests")
+    endforeach ()
+
+    file(GLOB parallel tests/parallel/file_processing_par.cpp)
+
+    foreach (file ${parallel})
+        set(name)
+        get_filename_component(name ${file} NAME_WE)
+        add_executable("${name}_tests" ${file})
+        target_link_libraries("${name}_tests" gtest_main)
+        target_link_libraries("${name}_tests" hw_lib_parallel)
+        add_test(NAME ${name} COMMAND "${name}_tests")
+    endforeach ()
+
 endif ()
