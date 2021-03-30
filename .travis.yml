@@ -37,8 +37,11 @@ matrix:
             - valgrind
       python: 3.8
       script:
-        - cd ../stress_tests
-        - python generator.py
+        - mkdir ../generated_data
+        - cd ../generated_data
+        - cp ../data/file .
+        - split -n 10 file
+        - rm file
         - cd ../build
         - cmake -DPARALLEL=ON -DCONSISTENT=ON ..
         - make
