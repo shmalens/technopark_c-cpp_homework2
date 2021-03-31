@@ -15,14 +15,13 @@ int init_block(const char *dir_path, files_t **files, hash_table_t **set, bag_of
 
     *set = create_hash_from_files(*files);
     if (*set == NULL) {
-        delete_files_set(*files);
+        free_resources(*files, NULL, NULL);
         return ERR_CREATING_SET;
     }
 
     *bag = create_bag(*files, *set);
     if (*bag == NULL) {
-        delete_hash(*set);
-        delete_files_set(*files);
+        free_resources(*files, *set, NULL);
         return ERR_CREATING_BAG;
     }
 

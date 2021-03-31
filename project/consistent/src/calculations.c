@@ -101,6 +101,22 @@ index_val_t **get_top(const bag_of_words_t *bag) {
     return top_table;
 }
 
+static int delete_top_table(size_t rows, index_val_t **top_table) {
+    if (rows == 0) {
+        return -1;
+    }
+
+    if (top_table == NULL) {
+        return -1;
+    }
+
+    for (size_t i = 0; i < rows; ++i) {
+        free(top_table[i]);
+    }
+    free(top_table);
+    return 0;
+}
+
 int delete_top(const bag_of_words_t *bag, index_val_t **top_table) {
     if (bag == NULL) {
         return -1;
@@ -110,10 +126,26 @@ int delete_top(const bag_of_words_t *bag, index_val_t **top_table) {
         return -1;
     }
 
-    for (size_t i = 0; i < bag->rows; ++i) {
-        free(top_table[i]);
+    return delete_top_table(bag->rows, top_table);
+}
+
+static int print_top(index_val_t **table, const files_t *files, char **words, const size_t rows, const size_t positions) {
+    if (table == NULL || files == NULL || words == NULL) {
+        return -1;
     }
-    free(top_table);
+
+    if (rows == 0 || positions == 0) {
+        return -1;
+    }
+
+    for (size_t i = 0; i < rows; ++i) {
+        printf("file %s top:\n", files->file_names[i]);
+        for (int j = 0; j < positions; ++j) {
+            printf("%d: %s value: %.8f\n", j + 1, words[table[i][j].index], table[i][j].val);
+        }
+        printf("\n");
+    }
+
     return 0;
 }
 
@@ -140,13 +172,7 @@ int show_top(const hash_table_t *set, const files_t *files, index_val_t **table,
         }
     }
 
-    for (size_t i = 0; i < rows; ++i) {
-        printf("file %s top:\n", files->file_names[i]);
-        for (int j = 0; j < positions; ++j) {
-            printf("%d: %s value: %.8f\n", j + 1, words[table[i][j].index], table[i][j].val);
-        }
-        printf("\n");
-    }
+    print_top(table, files, words, rows, positions);
 
     for (int i = 0; i < set->total_size; ++i) {
         free(words[i]);

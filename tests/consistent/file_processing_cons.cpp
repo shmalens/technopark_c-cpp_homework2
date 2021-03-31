@@ -1,7 +1,9 @@
 #include "gtest/gtest.h"
 #include <iostream>
 
-#define TEST_PATH "../data/"
+#define TEST_PATH1 "./data/data1/"
+#define TEST_PATH2 "../data/data2/"
+#define TEST_PATH3 "../data/data3/"
 
 extern "C" {
 #include "directory_processing.h"
@@ -48,25 +50,42 @@ SomeBag::~SomeBag() {
 }
 
 TEST(HashTests, hashTests) {
-FilesSet set;
-Hash hash;
-set.files = read_files(TEST_PATH);
-ASSERT_TRUE(set.files);
-hash.hash = create_hash_from_files(set.files);
-ASSERT_TRUE(hash.hash);
-ASSERT_EQ(delete_hash(hash.hash), 0);
-hash.hash = NULL;
+FilesSet set1;
+Hash hash1;
+set1.files = read_files(TEST_PATH1);
+ASSERT_TRUE(set1.files);
+hash1.hash = create_hash_from_files(set1.files);
+ASSERT_TRUE(hash1.hash);
+ASSERT_EQ(delete_hash(hash1.hash), 0);
+hash1.hash = NULL;
+
+FilesSet set2;
+Hash hash2;
+set1.files = read_files(TEST_PATH2);
+ASSERT_TRUE(set2.files);
+hash1.hash = create_hash_from_files(set2.files);
+ASSERT_TRUE(hash2.hash);
+ASSERT_EQ(delete_hash(hash2.hash), 0);
+hash2.hash = NULL;
+
+FilesSet set3;
+Hash hash3;
+set1.files = read_files(TEST_PATH3);
+ASSERT_TRUE(set3.files);
+hash1.hash = create_hash_from_files(set3.files);
+ASSERT_TRUE(hash3.hash);
+ASSERT_EQ(delete_hash(hash3.hash), 0);
+hash3.hash = NULL;
 
 ASSERT_FALSE(create_hash_from_files(NULL));
 ASSERT_EQ(delete_hash(NULL), -1);
 }
 
-
-TEST(BagTest, gabTest) {
+TEST(BagTest, babTest) {
 SomeBag bag;
 Hash hash;
 FilesSet files;
-files.files = read_files(TEST_PATH);
+files.files = read_files(TEST_PATH1);
 ASSERT_TRUE(files.files);
 hash.hash = create_hash_from_files(files.files);
 ASSERT_TRUE(hash.hash);
