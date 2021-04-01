@@ -78,7 +78,7 @@ matrix:
         - make
         - ctest --verbose
         - cd ..
-        - export CODECOV_TOKEN="5425c62a-1e9e-4b61-84a4-289806f3c3f0"
+        - export CODECOV_TOKEN="811e9748-3ae1-47b3-ade9-d6b5c5e951ff"
         - bash <(curl -s https://codecov.io/bash)
 
     - os: linux
