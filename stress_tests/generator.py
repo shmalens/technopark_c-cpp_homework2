@@ -1,0 +1,41 @@
+import random
+from os import listdir, remove, path, mkdir
+
+data_file_path = "../data/file"
+generating_path = "../generated_data"
+max_files_amount = 500
+
+
+def prepare_words():
+    words = []
+    with open(data_file_path, "r") as file:
+        words = file.read()
+
+    words = words.split()
+    return words
+
+
+if __name__ == '__main__':
+    if not path.exists(generating_path):
+        print("Directory does not exist, creating...")
+        mkdir(generating_path)
+    else:
+        dir_files = listdir(generating_path)
+        if len(dir_files) != 0:
+            for f in dir_files:
+                remove(generating_path + '/' + f)
+
+    files_amount = random.randint(1, max_files_amount)
+    list_of_words = prepare_words()
+    words_min = 1
+    words_max = len(list_of_words)
+    total_words_amount = 0
+    for i in range(1, files_amount):
+        words_amount = random.randint(words_min, words_max)
+        with open(generating_path + '/' + str(i), "w") as file:
+            amount_to_write = int(words_amount)
+            total_words_amount += amount_to_write
+            [file.write(random.choice(list_of_words) + " ") for i in range(amount_to_write)]
+
+        # print(f"In file {i} writen {words_amount} words")
+    # print(f"Total words writen: {total_words_amount}")

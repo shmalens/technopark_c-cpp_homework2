@@ -1,0 +1,9 @@
+.idea/*
+build/*
+cmake-build-debug/*
+generator/venv/*
+generated_data/*
+python_scripts/venv*
+python_scripts/.idea/*
+stress_tests/venv/*
+stress_tests/.idea/*

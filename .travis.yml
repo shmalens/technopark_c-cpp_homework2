@@ -1,0 +1,97 @@
+os: linux
+compiler:
+  - gcc
+
+env:
+  global:
+    - LINUX_DIST=xenial
+
+before_script:
+  - mkdir build
+  - cd build
+  - |
+    if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+      mkdir -p external/cmake
+      pushd external/cmake
+      wget https://cmake.org/files/v3.8/cmake-3.8.0-Linux-x86_64.sh
+      chmod +x cmake-*-Linux-x86_64.sh
+      ./cmake-*-Linux-x86_64.sh --exclude-subdir --skip-license
+      export PATH="${PWD}/bin:$PATH"
+      popd
+    else
+      if ! brew ls --version cmake &>/dev/null; then brew update; brew install cmake; fi
+    fi
+
+matrix:
+  include:
+    - os: linux
+      env:
+        - TEST="Valgrind"
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - gcc-6
+            - g++-6
+            - valgrind
+      python: 3.8
+      script:
+        - mkdir ../generated_data
+        - cd ../generated_data
+        - cp ../data/file .
+        - split -n 10 file
+        - rm file
+        - cd ../build
+        - cmake -DPARALLEL=ON -DCONSISTENT=ON ..
+        - make
+        - ./../run_valgrind.sh
+
+    - os: linux
+      env:
+        - TEST="Stress tests"
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - gcc-6
+            - g++-6
+      python: 3.8
+      script:
+        - cmake -DPARALLEL=ON -DCONSISTENT=ON ..
+        - make
+        - ../stress_tests/run_stress_tests.sh
+
+    - os: linux
+      env:
+        - TEST="Codecov + Tests"
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - gcc-6
+            - g++-6
+      script:
+        - cmake -DBUILD_TESTS=ON -DENABLE_COVERAGE=ON ..
+        - make
+        - ctest --verbose
+        - cd ..
+        - export CODECOV_TOKEN="811e9748-3ae1-47b3-ade9-d6b5c5e951ff"
+        - bash <(curl -s https://codecov.io/bash)
+
+    - os: linux
+      env:
+        - TEST="cppcheck"
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - gcc-6
+            - g++-6
+      script:
+        - cmake -DENABLE_CPPCHECK=ON ..
+        - make
+        - make check1 && make check2
