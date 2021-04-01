@@ -132,11 +132,12 @@ if (BUILD_TESTS)
     enable_testing()
 
     file(GLOB consistent
-            tests/consistent/file_processing_cons.cpp
+            tests/consistent/bag_creating_cons.cpp
             tests/consistent/control_units_cons.cpp
             tests/consistent/misc_cons.cpp
             tests/consistent/dir_processing_cons.cpp
             tests/consistent/calculations_cons.cpp
+            tests/consistent/create_hash_cons.cpp
             )
 
     foreach (file ${consistent})
@@ -154,6 +155,8 @@ if (BUILD_TESTS)
             tests/parallel/misc_par.cpp
             tests/parallel/dir_processing_par.cpp
             tests/parallel/calculations_par.cpp
+            tests/parallel/create_hash_par.cpp
+            tests/parallel/bag_creating_par.cpp
             )
 
     foreach (file ${parallel})

@@ -7,7 +7,7 @@
 #define MAXSIZE 500
 #define MAX_TABLE_SIZE 65536
 #define RAND_SIZE 256
-#define INIT_VECTOR_SIZE 500
+#define INIT_VECTOR_SIZE 1
 
 enum set_adding_events {
     ERROR_NODE_CREATING = -3,
@@ -19,8 +19,8 @@ typedef struct {
     size_t *indexes;
     char **words;
 
-    int amount;
-    int capacity;
+    size_t amount;
+    size_t capacity;
 } vector_t;
 
 typedef struct {

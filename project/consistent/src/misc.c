@@ -19,7 +19,7 @@ int custom_strcpy(char **dest, const char *src) {
         return ERROR_BAD_MEM_ALLOCATION;
     }
 
-    strncpy(*dest, src, src_size);
+    memcpy(*dest, src, sizeof(char) * src_size);
     return 0;
 }
 

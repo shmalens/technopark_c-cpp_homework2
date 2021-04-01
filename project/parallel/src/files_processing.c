@@ -50,17 +50,21 @@ static int resize_vector(vector_t *vector) {
         return -1;
     }
 
-    char **tmp = (char **) realloc(vector->words, sizeof(char *) * vector->capacity * 2);
+    char **tmp = (char **) malloc(sizeof(char *) * vector->capacity * 2);
     if (tmp == NULL) {
         return -1;
     }
+    memcpy(tmp, vector->words, sizeof(char *) * vector->capacity);
+    free(vector->words);
     vector->words = tmp;
 
-    size_t *tmp_indexes = (size_t *) realloc(vector->words, sizeof(size_t) * vector->capacity * 2);
+    size_t *tmp_indexes = (size_t *) malloc(sizeof(size_t) * vector->capacity * 2);
     if (tmp_indexes == NULL) {
         return -1;
     }
 
+    memcpy(tmp_indexes, vector->indexes, sizeof(size_t) * vector->capacity);
+    free(vector->indexes);
     vector->indexes = tmp_indexes;
     vector->capacity *= 2;
 

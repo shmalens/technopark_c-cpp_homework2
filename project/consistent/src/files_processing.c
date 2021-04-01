@@ -12,7 +12,7 @@ static vector_t *create_vector() {
     }
 
     new_vector->amount = 0;
-    new_vector->capacity = 10;
+    new_vector->capacity = INIT_VECTOR_SIZE;
     new_vector->words = (char **) malloc(sizeof(char *) * new_vector->capacity);
     if (new_vector->words == NULL) {
         free(new_vector);
@@ -46,18 +46,21 @@ static int resize_vector(vector_t *vector) {
         return -1;
     }
 
-    char **tmp = (char **) realloc(vector->words, sizeof(char *) * vector->capacity * 2);
+    char **tmp = (char **) malloc(sizeof(char *) * vector->capacity * 2);
     if (tmp == NULL) {
         return -1;
     }
+    memcpy(tmp, vector->words, sizeof(char *) * vector->capacity);
+    free(vector->words);
     vector->words = tmp;
 
-
-    size_t *tmp_indexes = (size_t *) realloc(vector->words, sizeof(size_t) * vector->capacity * 2);
+    size_t *tmp_indexes = (size_t *) malloc(sizeof(size_t) * vector->capacity * 2);
     if (tmp_indexes == NULL) {
         return -1;
     }
 
+    memcpy(tmp_indexes, vector->indexes, sizeof(size_t) * vector->capacity);
+    free(vector->indexes);
     vector->indexes = tmp_indexes;
     vector->capacity *= 2;
 
@@ -147,12 +150,9 @@ static int insert_in_hash(hash_table_t *hash, char *word) {
         if (hash->hash_table[index] == NULL) {
             return ERROR_NODE_CREATING;
         }
-        insert_in_vector(hash->hash_table[index], word, hash->total_size);
-        hash->total_size += 1;
     }
 
-    int inf = insert_in_vector(hash->hash_table[index], word, hash->total_size);
-    if (inf == ALREADY_EXISTS) {
+    if (insert_in_vector(hash->hash_table[index], word, hash->total_size) == ALREADY_EXISTS) {
         return ALREADY_EXISTS;
     }
     hash->total_size += 1;
@@ -174,6 +174,7 @@ hash_table_t *create_hash_from_files(files_t *files) {
         FILE *fd = fopen(files->file_names[i], "r");
         if (fd == NULL) {
             delete_hash(new_hash);
+            return NULL;
         }
 
         int err;
